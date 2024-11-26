@@ -1,20 +1,21 @@
 version: "3.9"
+volumes:
+  app_data:
 
 services:
   zerobot-plugin:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "30110:3000"  # 将主机的 3000 端口映射到容器的 3000 端口
-    volumes:
-      - /volume1/docker/ZeroBot-Plugin/app:/app  # 将主机目录挂载到容器的 /app 目录
     environment:
-      # 在这里添加你的环境变量，例如：
-      MY_VARIABLE: "my_value"
+      - GOPROXY=https://goproxy.cn,direct
+    ports:
+      - "30110:3000"
+    volumes:
+      - app_data:/app
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"] # 记得替换 /healthz 为你的健康检查端点
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"] # Replace with your health check
       interval: 30s
       timeout: 10s
       retries: 3
